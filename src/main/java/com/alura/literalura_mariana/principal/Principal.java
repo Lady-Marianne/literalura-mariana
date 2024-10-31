@@ -1,10 +1,19 @@
 package com.alura.literalura_mariana.principal;
 
+import com.alura.literalura_mariana.model.DatosLibro;
+import com.alura.literalura_mariana.model.Libro;
+import com.alura.literalura_mariana.repository.LibroRepository;
+import com.alura.literalura_mariana.service.ConsumirAPI;
+import com.alura.literalura_mariana.service.ConvertirDatos;
+
 import java.util.Scanner;
 
 public class Principal {
     private static final String URL_BASE = "https://gutendex.com/books/";
     private Scanner teclado = new Scanner(System.in);
+    ConsumirAPI consumirAPI = new ConsumirAPI();
+    ConvertirDatos conversor = new ConvertirDatos();
+    private LibroRepository repositorio;
 
     public void mostrarMenu() {
         var opcion = -1;
@@ -23,7 +32,7 @@ public class Principal {
 
             switch (opcion) {
                 case 1:
-                    buscarLibroPorTitulo();
+                    buscarLibroEnAPI();
                     break;
                 case 2:
                     mostrarLibrosRegistrados();
@@ -45,6 +54,21 @@ public class Principal {
             }
         }
     }
+    private DatosLibro buscarLibroPorTitulo() {
+        System.out.println("Escriba el título del libro que desea buscar:");
+        var tituloLibro = teclado.nextLine();
+        var json = consumirAPI.obtenerDatos(URL_BASE + "?search=" + tituloLibro.replace(" ","+"));
+        System.out.println(json);
+        DatosLibro datosLibro = conversor.obtenerDatos(json, DatosLibro.class);
+        return datosLibro;
+    }
+
+    private void buscarLibroEnAPI() {
+        DatosLibro datosLibro = buscarLibroPorTitulo();
+        Libro libro = new Libro(datosLibro);
+        repositorio.save(libro);
+        System.out.println(datosLibro);
+    }
 
     private void buscarLibrosPorIdioma() {
     }
@@ -58,6 +82,6 @@ public class Principal {
     private void mostrarLibrosRegistrados() {
     }
 
-    private void buscarLibroPorTitulo() {
-    }
+
+
 }
