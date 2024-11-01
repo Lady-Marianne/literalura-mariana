@@ -55,7 +55,7 @@ public class Principal {
         }
     }
     private DatosLibro buscarLibroPorTitulo() {
-        System.out.println("Escriba el título del libro que desea buscar:");
+        System.out.println("Escriba el título del libro que desea buscar (o parte del mismo):");
         var tituloLibro = teclado.nextLine();
         var json = consumirAPI.obtenerDatos(URL_BASE + "?search=" + tituloLibro.replace(" ","+"));
         System.out.println(json);

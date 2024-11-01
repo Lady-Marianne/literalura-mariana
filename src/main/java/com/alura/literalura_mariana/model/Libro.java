@@ -1,22 +1,40 @@
 package com.alura.literalura_mariana.model;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
+import jakarta.persistence.*;
 
 import java.util.List;
 
+@Entity
+@Table (name = "libros")
 public class Libro {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(unique = true)
     private String titulo;
-    private List<DatosAutor> autor;
+    @OneToMany(mappedBy = "libro", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<DatosAutor> autores;
+    @ElementCollection(targetClass = Lenguaje.class)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "idioma")
     private List<String> idiomas;
     private Double numeroDeDescargas;
 
+    public Libro(){}
+
     public Libro(DatosLibro datosLibro) {
         this.titulo = datosLibro.titulo();
-        this.autor = datosLibro.autores();
+        this.autores = datosLibro.autores();
         this.idiomas = datosLibro.idiomas();
         this.numeroDeDescargas = datosLibro.numeroDeDescargas();
+    }
 
+    @Override
+    public String toString() {
+        return  "Título: " + titulo +
+                " - Autores: " + autores +
+                " - Idiomas disponibles: " + idiomas +
+                " - Número de descargas: " + numeroDeDescargas;
     }
 
     public Long getId() {
@@ -35,12 +53,12 @@ public class Libro {
         this.titulo = titulo;
     }
 
-    public List<DatosAutor> getAutor() {
-        return autor;
+    public List<DatosAutor> getAutores() {
+        return autores;
     }
 
-    public void setAutor(List<DatosAutor> autor) {
-        this.autor = autor;
+    public void setAutores(List<DatosAutor> autores) {
+        this.autores = autores;
     }
 
     public List<String> getIdiomas() {
