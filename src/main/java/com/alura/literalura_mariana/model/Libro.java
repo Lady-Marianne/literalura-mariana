@@ -12,20 +12,24 @@ public class Libro {
     private Long id;
     @Column(unique = true)
     private String titulo;
-    @OneToMany(mappedBy = "libro", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<DatosAutor> autores;
+    @ManyToMany(mappedBy = "libro", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Autor> autores;
     @ElementCollection(targetClass = Lenguaje.class)
     @Enumerated(EnumType.STRING)
-    @Column(name = "idioma")
-    private List<String> idiomas;
-    private Double numeroDeDescargas;
+    @Column(name = "idiomas")
+    private Lenguaje idiomas;
+    private Integer numeroDeDescargas;
 
     public Libro(){}
 
     public Libro(DatosLibro datosLibro) {
         this.titulo = datosLibro.titulo();
-        this.autores = datosLibro.autores();
-        this.idiomas = datosLibro.idiomas();
+        this.autores = datosLibro.autores().stream()
+                .map(a -> new Autor(a.nombre(), a.fechaDeNacimiento(), a.fechaDeMuerte()))
+                .toList();
+        this.idiomas = datosLibro.idiomas().stream()
+                .map(i -> Lenguaje::fromEspanol)
+                .toArray(Lenguaje[]::new);
         this.numeroDeDescargas = datosLibro.numeroDeDescargas();
     }
 
@@ -53,27 +57,27 @@ public class Libro {
         this.titulo = titulo;
     }
 
-    public List<DatosAutor> getAutores() {
+    public List<Autor> getAutores() {
         return autores;
     }
 
-    public void setAutores(List<DatosAutor> autores) {
+    public void setAutores(List<Autor> autores) {
         this.autores = autores;
     }
 
-    public List<String> getIdiomas() {
+    public Lenguaje getIdiomas() {
         return idiomas;
     }
 
-    public void setIdiomas(List<String> idiomas) {
+    public void setIdiomas(Lenguaje idiomas) {
         this.idiomas = idiomas;
     }
 
-    public Double getNumeroDeDescargas() {
+    public Integer getNumeroDeDescargas() {
         return numeroDeDescargas;
     }
 
-    public void setNumeroDeDescargas(Double numeroDeDescargas) {
+    public void setNumeroDeDescargas(Integer numeroDeDescargas) {
         this.numeroDeDescargas = numeroDeDescargas;
     }
 }
