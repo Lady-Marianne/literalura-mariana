@@ -10,7 +10,17 @@ public class ConvertirDatos implements IConvertirDatos {
         try {
             return objectMapper.readValue(json,clase);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error al convertir JSON a la clase: " + clase.getName(), e);
+        }
+    }
+
+    // Método para devolver un JSON "bonito" (pretty print):
+    public String obtenerJsonBonito(String json) {
+        try {
+            // Formatea el JSON de manera legible
+            return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(objectMapper.readTree(json));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Error al formatear el JSON", e);
         }
     }
 }

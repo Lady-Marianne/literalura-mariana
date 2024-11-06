@@ -1,11 +1,11 @@
 package com.alura.literalura_mariana.principal;
 
+import com.alura.literalura_mariana.model.Datos;
 import com.alura.literalura_mariana.model.DatosLibro;
-import com.alura.literalura_mariana.model.Libro;
-import com.alura.literalura_mariana.repository.LibroRepository;
 import com.alura.literalura_mariana.service.ConsumirAPI;
 import com.alura.literalura_mariana.service.ConvertirDatos;
 
+import java.util.Optional;
 import java.util.Scanner;
 
 public class Principal {
@@ -13,13 +13,13 @@ public class Principal {
     private Scanner teclado = new Scanner(System.in);
     ConsumirAPI consumirAPI = new ConsumirAPI();
     ConvertirDatos conversor = new ConvertirDatos();
-    private LibroRepository repositorio;
+//    private LibroRepository repositorio;
 
     public void mostrarMenu() {
         var opcion = -1;
         while (opcion != 0) {
             var menu = """
-                    \n1 - Buscar libro por título.
+                    \n1 - Buscar y mostrar libro por título.
                     2 - Mostrar los libros registrados.
                     3 - Mostrar los autores registrados. 
                     4 - Mostrar autores vivos durante un año determinado.
@@ -32,20 +32,20 @@ public class Principal {
 
             switch (opcion) {
                 case 1:
-                    buscarLibroEnAPI();
+                    buscarLibroPorTitulo();
                     break;
-                case 2:
-                    mostrarLibrosRegistrados();
-                    break;
-                case 3:
-                    mostrarAutoresRegistrados();
-                    break;
-                case 4:
-                    mostrarAutoresPorAnio();
-                    break;
-                case 5:
-                    buscarLibrosPorIdioma();
-                    break;
+//                case 2:
+//                    mostrarLibrosRegistrados();
+//                    break;
+//                case 3:
+//                    mostrarAutoresRegistrados();
+//                    break;
+//                case 4:
+//                    mostrarAutoresPorAnio();
+//                    break;
+//                case 5:
+//                    buscarLibrosPorIdioma();
+//                    break;
                 case 0:
                     System.out.println("Cerrando la aplicación...");
                     break;
@@ -54,33 +54,46 @@ public class Principal {
             }
         }
     }
-    private DatosLibro buscarLibroPorTitulo() {
+    private void buscarLibroPorTitulo() {
         System.out.println("Escriba el título del libro que desea buscar (o parte del mismo):");
         var tituloLibro = teclado.nextLine();
         var json = consumirAPI.obtenerDatos(URL_BASE + "?search=" + tituloLibro.replace(" ","+"));
-        System.out.println(json);
-        DatosLibro datosLibro = conversor.obtenerDatos(json, DatosLibro.class);
-        return datosLibro;
+
+        // Obtener el JSON bonito que me muestra todas las versiones del libro:
+
+        var jsonBonito = conversor.obtenerJsonBonito(json);
+
+        // Imprimir JSON formateado:
+
+        System.out.println(jsonBonito);
+
+        // Aquí muestro la primera versión del libro buscado, que suele ser la que está
+        // en su idioma original:
+
+        var datosBusqueda = conversor.obtenerDatos(json, Datos.class);
+        Optional<DatosLibro> libroBuscado = datosBusqueda.resultados().stream()
+                .filter(l -> l.titulo().toUpperCase().contains(tituloLibro.toUpperCase()))
+                .findFirst();
+        if(libroBuscado.isPresent()){
+            System.out.println("Libro encontrado: " + libroBuscado.get());
+        } else {
+            System.out.println("Libro no encontrado.");
+        }
+        //repositorio.save(datosLibro);
+
     }
 
-    private void buscarLibroEnAPI() {
-        DatosLibro datosLibro = buscarLibroPorTitulo();
-        Libro libro = new Libro(datosLibro);
-        repositorio.save(libro);
-        System.out.println(datosLibro);
-    }
-
-    private void buscarLibrosPorIdioma() {
-    }
-
-    private void mostrarAutoresPorAnio() {
-    }
-
-    private void mostrarAutoresRegistrados() {
-    }
-
-    private void mostrarLibrosRegistrados() {
-    }
+//    private void buscarLibrosPorIdioma() {
+//    }
+//
+//    private void mostrarAutoresPorAnio() {
+//    }
+//
+//    private void mostrarAutoresRegistrados() {
+//    }
+//
+//    private void mostrarLibrosRegistrados() {
+//    }
 
 
 }

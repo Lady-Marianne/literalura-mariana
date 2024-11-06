@@ -16,10 +16,15 @@ public class ConsumirAPI {
         try {
             response = client
                     .send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+
+            // Verificar el código de estado HTTP:
+
+            if (response.statusCode() != 200) {
+                System.out.println("Error: Código de estado HTTP " + response.statusCode());
+                return null;
+            }
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException("Error al consumir la API: " + e.getMessage(), e);
         }
         String json = response.body();
         return json;

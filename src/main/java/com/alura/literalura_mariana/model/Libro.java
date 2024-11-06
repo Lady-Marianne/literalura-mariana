@@ -1,44 +1,19 @@
 package com.alura.literalura_mariana.model;
 
-import jakarta.persistence.*;
-
 import java.util.List;
 
-@Entity
-@Table (name = "libros")
 public class Libro {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
     private String titulo;
-    @ManyToMany(mappedBy = "libro", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Autor> autores;
-    @ElementCollection(targetClass = Lenguaje.class)
-    @Enumerated(EnumType.STRING)
-    @Column(name = "idiomas")
-    private Lenguaje idiomas;
+    private List<DatosAutor> autores;
+    private List<String> idiomas;
     private Integer numeroDeDescargas;
-
-    public Libro(){}
 
     public Libro(DatosLibro datosLibro) {
         this.titulo = datosLibro.titulo();
-        this.autores = datosLibro.autores().stream()
-                .map(a -> new Autor(a.nombre(), a.fechaDeNacimiento(), a.fechaDeMuerte()))
-                .toList();
-        this.idiomas = datosLibro.idiomas().stream()
-                .map(i -> Lenguaje::fromEspanol)
-                .toArray(Lenguaje[]::new);
+        this.autores = datosLibro.autores();
+        this.idiomas = datosLibro.idiomas();
         this.numeroDeDescargas = datosLibro.numeroDeDescargas();
-    }
-
-    @Override
-    public String toString() {
-        return  "Título: " + titulo +
-                " - Autores: " + autores +
-                " - Idiomas disponibles: " + idiomas +
-                " - Número de descargas: " + numeroDeDescargas;
     }
 
     public Long getId() {
@@ -57,19 +32,19 @@ public class Libro {
         this.titulo = titulo;
     }
 
-    public List<Autor> getAutores() {
+    public List<DatosAutor> getAutores() {
         return autores;
     }
 
-    public void setAutores(List<Autor> autores) {
+    public void setAutores(List<DatosAutor> autores) {
         this.autores = autores;
     }
 
-    public Lenguaje getIdiomas() {
+    public List<String> getIdiomas() {
         return idiomas;
     }
 
-    public void setIdiomas(Lenguaje idiomas) {
+    public void setIdiomas(List<String> idiomas) {
         this.idiomas = idiomas;
     }
 
