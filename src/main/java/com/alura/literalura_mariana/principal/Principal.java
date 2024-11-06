@@ -57,7 +57,8 @@ public class Principal {
     private void buscarLibroPorTitulo() {
         System.out.println("Escriba el título del libro que desea buscar (o parte del mismo):");
         var tituloLibro = teclado.nextLine();
-        var json = consumirAPI.obtenerDatos(URL_BASE + "?search=" + tituloLibro.replace(" ","+"));
+        var json = consumirAPI.obtenerDatos(URL_BASE + "?search=" +
+                tituloLibro.replace(" ","+"));
 
         // Obtener el JSON bonito que me muestra todas las versiones del libro:
 
