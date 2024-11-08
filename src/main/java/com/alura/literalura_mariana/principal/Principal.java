@@ -67,6 +67,10 @@ public class Principal {
     private void buscarLibroPorTitulo() {
         System.out.println("Escriba el título del libro que desea buscar (o parte del mismo):");
         var tituloLibro = teclado.nextLine();
+        if (tituloLibro == null || tituloLibro.trim().isEmpty()) {
+            System.out.println("El título del libro no puede estar vacío.");
+            return;
+        }
         var json = consumirAPI.obtenerDatos(URL_BASE + "?search=" +
                 tituloLibro.replace(" ","+"));
 

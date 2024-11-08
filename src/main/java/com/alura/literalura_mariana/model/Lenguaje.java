@@ -29,14 +29,16 @@ public enum Lenguaje {
     public static Lenguaje fromEspanol(String texto) {
         String textoNormalizado = normalizarTexto(texto);
         for (Lenguaje lenguaje : Lenguaje.values()) {
-            if (normalizarTexto(lenguaje.lenguajeGutendex).equals(textoNormalizado)) {
+            if (normalizarTexto(lenguaje.lenguajeEspanol).equals(textoNormalizado)) {
                 return lenguaje;
             }
         }
         throw new IllegalArgumentException("Ningún lenguaje encontrado: " + texto + ". Lenguajes disponibles: " +
                 Arrays.toString(Lenguaje.values()));
     }
-
+public String getLenguajeEspanol() {
+        return lenguajeEspanol;
+}
     // Método auxiliar para normalizar cadenas:
 
     private static String normalizarTexto(String input) {

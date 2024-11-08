@@ -1,4 +1,4 @@
-/*package com.alura.literalura_mariana.initializer;
+package com.alura.literalura_mariana.initializer;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -21,10 +21,7 @@ public class DatabaseInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        String url = "jdbc:postgresql://DB_HOST/"; // Cambia localhost por el valor correcto
-        username = "DB_USER";
-        password = "DB_PASSWORD";
-        String dbName = "literalura-mariana";
+        String dbName = "literalura-mariana";  // El nombre de la base de datos que estás verificando
 
         try (Connection connection = DriverManager.getConnection(url, username, password);
              Statement statement = connection.createStatement()) {
@@ -34,15 +31,14 @@ public class DatabaseInitializer implements CommandLineRunner {
                     "SELECT 1 FROM pg_database WHERE datname = '" + dbName + "';"
             );
 
-            if (!resultSet.next()) {  // Si el ResultSet está vacío,
-                // la base de datos no existe, por lo que se creará.
+            if (!resultSet.next()) {  // Si el ResultSet está vacío, la base de datos no existe
                 statement.executeUpdate("CREATE DATABASE \"" + dbName + "\";");
-                System.out.println("Base de datos creada: " + dbName);
+                System.out.println("\nBase de datos creada: " + dbName);
             } else {
-                System.out.println("La base de datos ya existe: " + dbName);
+                System.out.println("\nLa base de datos ya existe: " + dbName);
             }
         } catch (Exception e) {
-            System.out.println("Error al verificar o crear la base de datos: " + e.getMessage());
+            System.out.println("\nError al verificar o crear la base de datos: " + e.getMessage());
         }
     }
-}*/
+}

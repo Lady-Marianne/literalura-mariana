@@ -8,6 +8,9 @@ import java.net.http.HttpResponse;
 
 public class ConsumirAPI {
     public String obtenerDatos(String url){
+        if (url == null || url.isEmpty()) {
+            throw new IllegalArgumentException("la URL no puede ser nula ni estar vacía.");
+        }
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
