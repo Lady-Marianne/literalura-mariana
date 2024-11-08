@@ -1,9 +1,23 @@
 package com.alura.literalura_mariana.model;
 
+import com.alura.literalura_mariana.record.DatosAutor;
+import com.alura.literalura_mariana.record.DatosLibro;
+import com.alura.literalura_mariana.model.Autor;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import java.util.List;
+import java.util.stream.Collectors;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 
 public class Libro {
-    private Long id;
+    private Long idLibro;
     private String titulo;
     private List<DatosAutor> autores;
     private List<String> idiomas;
@@ -11,48 +25,27 @@ public class Libro {
 
     public Libro(DatosLibro datosLibro) {
         this.titulo = datosLibro.titulo();
-        this.autores = datosLibro.autores();
+        // En caso de que haya más de un autor, vamos a "capar" esa lista
+        // para que pasemos un solo autor, el primero, para ser consistentes
+        // con la consigna de que un libro solamente tiene un autor:
+        this.autores = datosLibro.autores().stream()
+                .limit(1)
+                .collect(Collectors.toList());
         this.idiomas = datosLibro.idiomas();
         this.numeroDeDescargas = datosLibro.numeroDeDescargas();
     }
-
-    public Long getId() {
-        return id;
+    private Autor convertirADatosAutor(DatosAutor datosAutor, Long idAutor) {
+        return new Autor(idAutor, datosAutor.nombre(), datosAutor.fechaDeNacimiento(),
+                datosAutor.fechaDeMuerte());
+    }
+    @Override
+    public String toString() {
+        return "Título: "+titulo+
+                "\nAutor: " + (autores.isEmpty() ? "Desconocido"
+                : convertirADatosAutor(autores.get(0), 1L).toString()) +
+                "\nIdioma: "+idiomas+
+                "\nNúmero de descargas: "+numeroDeDescargas;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getTitulo() {
-        return titulo;
-    }
-
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
-    }
-
-    public List<DatosAutor> getAutores() {
-        return autores;
-    }
-
-    public void setAutores(List<DatosAutor> autores) {
-        this.autores = autores;
-    }
-
-    public List<String> getIdiomas() {
-        return idiomas;
-    }
-
-    public void setIdiomas(List<String> idiomas) {
-        this.idiomas = idiomas;
-    }
-
-    public Integer getNumeroDeDescargas() {
-        return numeroDeDescargas;
-    }
-
-    public void setNumeroDeDescargas(Integer numeroDeDescargas) {
-        this.numeroDeDescargas = numeroDeDescargas;
-    }
 }
+

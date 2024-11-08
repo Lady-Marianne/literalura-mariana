@@ -1,4 +1,4 @@
-package com.alura.literalura_mariana.model;
+package com.alura.literalura_mariana.record;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record Datos(
+public record DatosResultado(
         @JsonAlias("results") List<DatosLibro> resultados
 ) {
 }

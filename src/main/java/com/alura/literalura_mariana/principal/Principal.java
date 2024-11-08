@@ -1,18 +1,19 @@
 package com.alura.literalura_mariana.principal;
 
-import com.alura.literalura_mariana.model.Datos;
-import com.alura.literalura_mariana.model.DatosLibro;
+import com.alura.literalura_mariana.model.Libro;
+import com.alura.literalura_mariana.record.DatosLibro;
+import com.alura.literalura_mariana.record.DatosResultado;
 import com.alura.literalura_mariana.service.ConsumirAPI;
 import com.alura.literalura_mariana.service.ConvertirDatos;
 
-import java.util.Optional;
-import java.util.Scanner;
+import java.util.*;
 
 public class Principal {
     private static final String URL_BASE = "https://gutendex.com/books/";
     private Scanner teclado = new Scanner(System.in);
     ConsumirAPI consumirAPI = new ConsumirAPI();
     ConvertirDatos conversor = new ConvertirDatos();
+
 //    private LibroRepository repositorio;
 
     public void mostrarMenu() {
@@ -27,8 +28,16 @@ public class Principal {
                     0 - Salir
                     """;
             System.out.println(menu);
-            opcion = teclado.nextInt();
-            teclado.nextLine();
+
+            try {
+                opcion = teclado.nextInt();
+                teclado.nextLine();  // Limpiamos el buffer
+            } catch (InputMismatchException e) {
+                System.out.println("Entrada no válida. Por favor, ingrese un número.");
+                teclado.nextLine();  // Limpiamos el buffer de entrada para evitar el loop infinito.
+                opcion = -1;         // Restablecemos "opcion" para que el menú se muestre de nuevo.
+                continue;            // Salta al siguiente ciclo sin ejecutar el resto del código en el "while".
+            }
 
             switch (opcion) {
                 case 1:
@@ -54,6 +63,7 @@ public class Principal {
             }
         }
     }
+
     private void buscarLibroPorTitulo() {
         System.out.println("Escriba el título del libro que desea buscar (o parte del mismo):");
         var tituloLibro = teclado.nextLine();
@@ -66,23 +76,30 @@ public class Principal {
 
         // Imprimir JSON formateado:
 
-        System.out.println(jsonBonito);
+        //System.out.println(jsonBonito);
 
         // Aquí muestro la primera versión del libro buscado, que suele ser la que está
         // en su idioma original:
 
-        var datosBusqueda = conversor.obtenerDatos(json, Datos.class);
+        var datosBusqueda = conversor.obtenerDatos(json, DatosResultado.class);
+
+        // Buscar el primer libro cuyo título contenga la búsqueda:
+
         Optional<DatosLibro> libroBuscado = datosBusqueda.resultados().stream()
                 .filter(l -> l.titulo().toUpperCase().contains(tituloLibro.toUpperCase()))
                 .findFirst();
         if(libroBuscado.isPresent()){
-            System.out.println("Libro encontrado: " + libroBuscado.get());
+            Libro libro = new Libro(libroBuscado.get());
+            System.out.println(libro);
         } else {
             System.out.println("Libro no encontrado.");
         }
-        //repositorio.save(datosLibro);
+
+        //repositorio.save(libro);
 
     }
+
+
 
 //    private void buscarLibrosPorIdioma() {
 //    }

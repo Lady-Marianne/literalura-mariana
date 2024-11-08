@@ -1,4 +1,4 @@
-package com.alura.literalura_mariana.model;
+package com.alura.literalura_mariana.record;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
