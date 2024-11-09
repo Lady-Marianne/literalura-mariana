@@ -6,14 +6,18 @@ import com.alura.literalura_mariana.record.DatosLibro;
 import com.alura.literalura_mariana.repository.AutorRepository;
 import com.alura.literalura_mariana.repository.LibroRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 @Service
 public class LibroService {
 
+    @Autowired
     private final AutorRepository autorRepository;
+    @Autowired
     private final LibroRepository libroRepository;
 
     @Autowired
@@ -22,33 +26,35 @@ public class LibroService {
         this.libroRepository = libroRepository;
     }
 
-    public Libro buscarYGuardarLibro(DatosLibro datosLibro) {
-        // Buscar si el libro ya existe en la base de datos:
-        Optional<Libro> libroExistente = libroRepository.findByTitulo(datosLibro.titulo());
+    @Transactional
+    public String verificarYGuardarLibro(Libro libro) {
+        // 1. Verificar si el libro ya existe por su título
+        Optional<Libro> libroExistente = libroRepository.findByTitulo(libro.getTitulo());
+
         if (libroExistente.isPresent()) {
-            return null;  // El libro ya existe.
+            return "El libro ya está en la base de datos.";
         }
 
-        // Crear una nueva instancia de Autor usando los datos proporcionados:
-        Autor autor = new Autor(datosLibro.autores().get(0));
+        // 2. Verificar si el autor ya existe por su nombre:
+        try {
+            Optional<Autor> autorExistente = autorRepository.findByNombre(libro.getAutor().getNombre());
 
-// Comprobar si el autor ya existe en la base de datos:
-        Optional<Autor> autorExistente = autorRepository.findByNombre(datosLibro.autores().get(0).nombre());
+            Autor autor;
+            if (autorExistente.isPresent()) {
+                autor = autorExistente.get();
+            } else {
+                // Si el autor no existe, se guarda uno nuevo
+                autor = libro.getAutor();
+                autorRepository.save(autor);
+            }
+            libro.setAutor(autor);
+            // 3. Guardar el nuevo libro con el autor ya verificado:
+            libroRepository.save(libro);
 
-        if (autorExistente.isPresent()) {
-            // Si el autor existe, usamos el autor existente:
-            autor = autorExistente.get();
-        } else {
-            // Si el autor no existe, creamos uno nuevo y lo guardamos:
-            autor = new Autor(datosLibro.autores().get(0));
-            autorRepository.save(autor);  // Guardar el nuevo autor en la base de datos.
+            return "Libro y autor guardados correctamente.";
+        } catch (DataAccessException e) {
+            e.printStackTrace();
+            return "Error al guardar el libro: " + e.getMessage();
         }
-
-
-        // Crear una nueva instancia de Libro usando los datos proporcionados y el autor existente o recién creado:
-        Libro libroNuevo = new Libro(datosLibro, autor);
-
-        // Guardar el libro en la base de datos
-        return libroRepository.save(libroNuevo);
     }
 }

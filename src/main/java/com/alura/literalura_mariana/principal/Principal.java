@@ -5,6 +5,8 @@ import com.alura.literalura_mariana.record.DatosLibro;
 import com.alura.literalura_mariana.record.DatosResultado;
 import com.alura.literalura_mariana.service.ConsumirAPI;
 import com.alura.literalura_mariana.service.ConvertirDatos;
+import com.alura.literalura_mariana.service.LibroService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -17,24 +19,16 @@ public class Principal {
 
     private final ConsumirAPI consumirAPI;
     private final ConvertirDatos conversor;
+    private final LibroService libroService;
 
-    public Principal(ConsumirAPI consumirAPI, ConvertirDatos conversor) {
+    @Autowired
+    public Principal(ConsumirAPI consumirAPI, ConvertirDatos conversor, LibroService libroService) {
         this.consumirAPI = consumirAPI;
         this.conversor = conversor;
+        this.libroService = libroService;
     }
 
-//    ConsumirAPI consumirAPI = new ConsumirAPI();
-//    ConvertirDatos conversor = new ConvertirDatos();
-//    private final LibroService libroService;
     //    private LibroRepository repositorio;
-
-
-//    @Autowired
-//    public Principal(ConsumirAPI consumirAPI, ConvertirDatos conversor, LibroService libroService) {
-//        this.consumirAPI = consumirAPI;
-//        this.conversor = conversor;
-//        this.libroService = libroService;
-//    }
 
     public void mostrarMenu() {
         var opcion = -1;
@@ -107,31 +101,20 @@ public class Principal {
         Optional<DatosLibro> libroBuscado = datosBusqueda.resultados().stream()
                 .filter(l -> l.titulo().toUpperCase().contains(tituloLibro.toUpperCase()))
                 .findFirst();
+        Libro libro = null;
         if (libroBuscado.isPresent()) {
-            Libro libro = new Libro(libroBuscado.get(), null);
+            libro = new Libro(libroBuscado.get(), null);
             System.out.println(libro);
         } else {
             System.out.println("Libro no encontrado.");
         }
 
+        // Llamamos a la función de verificación y guardado desde LibroService:
+        String resultado = libroService.verificarYGuardarLibro(libro);
 
-//            // Llamar al servicio para buscar y guardar el libro:
-//
-//            Libro libro = libroService.buscarYGuardarLibro(libroBuscado.get());
-//
-//            // Si el libro fue encontrado en la base de datos o se guardó con éxito, lo mostramos
-//            if (libro != null) {
-//                System.out.println("Libro encontrado (y guardado si no existía): " + libro);
-//            } else {
-//                // Si no se pudo guardar (ya existe), aún mostramos el libro
-//                System.out.println("El libro ya existe en la base de datos: " + libro);
-//            }
-//        } else {
-//            System.out.println("No se encontró un libro que coincida con el título.");
-//        }
-//
-//    }
-
+        // Mostrar el resultado (por ejemplo, en la consola):
+        System.out.println(resultado);
+    }
 
 //    private void buscarLibrosPorIdioma() {
 //    }
@@ -146,5 +129,5 @@ public class Principal {
 //    }
 
 
-    }
 }
+
