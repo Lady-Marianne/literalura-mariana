@@ -30,7 +30,7 @@ public class Libro {
     @JoinColumn(name = "id_autor")
     private Autor autor;
 
-//    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING)
     private Lenguaje idiomas;
 
     private Integer numeroDeDescargas;

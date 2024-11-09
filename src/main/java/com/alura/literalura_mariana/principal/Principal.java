@@ -5,8 +5,6 @@ import com.alura.literalura_mariana.record.DatosLibro;
 import com.alura.literalura_mariana.record.DatosResultado;
 import com.alura.literalura_mariana.service.ConsumirAPI;
 import com.alura.literalura_mariana.service.ConvertirDatos;
-import com.alura.literalura_mariana.service.LibroService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
