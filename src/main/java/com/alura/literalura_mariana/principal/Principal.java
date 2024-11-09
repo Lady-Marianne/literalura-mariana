@@ -5,16 +5,38 @@ import com.alura.literalura_mariana.record.DatosLibro;
 import com.alura.literalura_mariana.record.DatosResultado;
 import com.alura.literalura_mariana.service.ConsumirAPI;
 import com.alura.literalura_mariana.service.ConvertirDatos;
+import com.alura.literalura_mariana.service.LibroService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 
+@Component
 public class Principal {
+
     private static final String URL_BASE = "https://gutendex.com/books/";
     private Scanner teclado = new Scanner(System.in);
-    ConsumirAPI consumirAPI = new ConsumirAPI();
-    ConvertirDatos conversor = new ConvertirDatos();
 
-//    private LibroRepository repositorio;
+    private final ConsumirAPI consumirAPI;
+    private final ConvertirDatos conversor;
+
+    public Principal(ConsumirAPI consumirAPI, ConvertirDatos conversor) {
+        this.consumirAPI = consumirAPI;
+        this.conversor = conversor;
+    }
+
+//    ConsumirAPI consumirAPI = new ConsumirAPI();
+//    ConvertirDatos conversor = new ConvertirDatos();
+//    private final LibroService libroService;
+    //    private LibroRepository repositorio;
+
+
+//    @Autowired
+//    public Principal(ConsumirAPI consumirAPI, ConvertirDatos conversor, LibroService libroService) {
+//        this.consumirAPI = consumirAPI;
+//        this.conversor = conversor;
+//        this.libroService = libroService;
+//    }
 
     public void mostrarMenu() {
         var opcion = -1;
@@ -31,7 +53,7 @@ public class Principal {
 
             try {
                 opcion = teclado.nextInt();
-                teclado.nextLine();  // Limpiamos el buffer
+                teclado.nextLine();  // Limpiamos el buffer.
             } catch (InputMismatchException e) {
                 System.out.println("Entrada no válida. Por favor, ingrese un número.");
                 teclado.nextLine();  // Limpiamos el buffer de entrada para evitar el loop infinito.
@@ -72,18 +94,13 @@ public class Principal {
             return;
         }
         var json = consumirAPI.obtenerDatos(URL_BASE + "?search=" +
-                tituloLibro.replace(" ","+"));
+                tituloLibro.replace(" ", "+"));
 
         // Obtener el JSON bonito que me muestra todas las versiones del libro:
-
         var jsonBonito = conversor.obtenerJsonBonito(json);
 
         // Imprimir JSON formateado:
-
-        //System.out.println(jsonBonito);
-
-        // Aquí muestro la primera versión del libro buscado, que suele ser la que está
-        // en su idioma original:
+        System.out.println("\n" + jsonBonito + "\n");
 
         var datosBusqueda = conversor.obtenerDatos(json, DatosResultado.class);
 
@@ -92,17 +109,30 @@ public class Principal {
         Optional<DatosLibro> libroBuscado = datosBusqueda.resultados().stream()
                 .filter(l -> l.titulo().toUpperCase().contains(tituloLibro.toUpperCase()))
                 .findFirst();
-        if(libroBuscado.isPresent()){
-            Libro libro = new Libro(libroBuscado.get());
+        if (libroBuscado.isPresent()) {
+            Libro libro = new Libro(libroBuscado.get(), null);
             System.out.println(libro);
         } else {
             System.out.println("Libro no encontrado.");
         }
 
-        //repositorio.save(libro);
 
-    }
-
+//            // Llamar al servicio para buscar y guardar el libro:
+//
+//            Libro libro = libroService.buscarYGuardarLibro(libroBuscado.get());
+//
+//            // Si el libro fue encontrado en la base de datos o se guardó con éxito, lo mostramos
+//            if (libro != null) {
+//                System.out.println("Libro encontrado (y guardado si no existía): " + libro);
+//            } else {
+//                // Si no se pudo guardar (ya existe), aún mostramos el libro
+//                System.out.println("El libro ya existe en la base de datos: " + libro);
+//            }
+//        } else {
+//            System.out.println("No se encontró un libro que coincida con el título.");
+//        }
+//
+//    }
 
 
 //    private void buscarLibrosPorIdioma() {
@@ -118,4 +148,5 @@ public class Principal {
 //    }
 
 
+    }
 }
