@@ -30,7 +30,7 @@ private LibroRepository libroRepository;
     @Transactional
     public String verificarYGuardarLibro(Libro libro) {
         if (libro == null) {
-            return "El libro buscado no existe en Gutendex.";
+            return "";
         }
         // 1. Verificar si el libro ya existe por su título:
         Optional<Libro> libroExistente = libroRepository.findByTitulo(libro.getTitulo());
