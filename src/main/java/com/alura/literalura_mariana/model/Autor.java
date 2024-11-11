@@ -36,7 +36,7 @@ public class Autor {
 
     @Override
     public String toString() {
-        return  "Nombre: "+nombre+
+        return  "\nNombre: "+nombre+
                 "\nFecha de nacimiento: "+fechaDeNacimiento+
                 "\nFecha de muerte: "+fechaDeMuerte;
     }
