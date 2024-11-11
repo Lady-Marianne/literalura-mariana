@@ -7,9 +7,7 @@ public enum Lenguaje {
     ESPANIOL("es","Español"),
     INGLES("en","Inglés"),
     PORTUGUES("pt","Portugués"),
-    FRANCES("fr","Francés"),
-    ITALIANO("it", "Italiano"),
-    ALEMAN("de","Alemán");
+    FRANCES("fr","Francés");
 
     private String lenguajeGutendex;
     private String lenguajeEspanol;

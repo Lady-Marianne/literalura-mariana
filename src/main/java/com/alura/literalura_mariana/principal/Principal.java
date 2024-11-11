@@ -1,6 +1,5 @@
 package com.alura.literalura_mariana.principal;
 
-import com.alura.literalura_mariana.model.Autor;
 import com.alura.literalura_mariana.model.Lenguaje;
 import com.alura.literalura_mariana.model.Libro;
 import com.alura.literalura_mariana.record.DatosLibro;
@@ -64,12 +63,12 @@ public class Principal {
                 case 1:
                     buscarLibroPorTitulo();
                     break;
-                case 2:
-                    mostrarLibrosRegistrados();
-                    break;
-                case 3:
-                    mostrarAutoresRegistrados();
-                    break;
+//                case 2:
+//                    mostrarLibrosRegistrados();
+//                    break;
+//                case 3:
+//                    mostrarAutoresRegistrados();
+//                    break;
 //                case 4:
 //                    mostrarAutoresPorAnio();
 //                    break;
@@ -103,29 +102,17 @@ public class Principal {
 
         var datosBusqueda = conversor.obtenerDatos(json, DatosResultado.class);
 
-        // Buscar el primer libro cuyo título contenga la búsqueda.
-        // Además, nos fijamos si el idioma del libro se halla en el enum Lenguaje,
-        // si no se halla en el enum Lenguajes, descartamos el libro:
+        // Buscar el primer libro cuyo título contenga la búsqueda:
 
         Optional<DatosLibro> libroBuscado = datosBusqueda.resultados().stream()
-                .filter(l -> {
-                    // Aquí verificamos si el idioma del libro está permitido:
-                    try {
-                        // Verifica si el idioma es permitido:
-                        Lenguaje.fromGutendex(l.idiomas().get(0));
-                        return l.titulo().toUpperCase().contains(tituloLibro.toUpperCase());
-                        // Si el idioma es válido, buscamos por título:
-                    } catch (IllegalArgumentException e) {
-                        return false;  // Si el idioma no está permitido, lo omitimos.
-                    }
-                })
+                .filter(l -> l.titulo().toUpperCase().contains(tituloLibro.toUpperCase()))
                 .findFirst();
         Libro libro = null;
         if (libroBuscado.isPresent()) {
             libro = new Libro(libroBuscado.get(), null);
             System.out.println(libro);
         } else {
-            System.out.println("El libro no se ha encontrado o está en un idioma no permitido.");
+            System.out.println("Libro no encontrado.");
         }
 
         // Llamamos a la función de verificación y guardado desde LibroService:
@@ -135,34 +122,19 @@ public class Principal {
         System.out.println(resultado);
     }
 
-//    public void mostrarLibrosRegistrados() {
-//        System.out.println(libroRepository.findAll());
+//    private void buscarLibrosPorIdioma() {
+//        System.out.println("Ingrese un idioma: ");
+//        var idioma = teclado.nextLine().trim().toLowerCase();
+//        Lenguaje lenguaje = Lenguaje.fromEspanol(idioma);
+//        if (idioma == null) {
+//            System.out.println("Idioma no válido.");
+//            return; // Salir si el idioma no es válido
+//        }
+//        String idiomaBaseDeDatos = lenguaje.name();
+//        List<Libro> librosPorIdioma = libroRepository.findByLanguage(idiomaBaseDeDatos);
+//        System.out.println("Libros escritos en " + lenguaje.getLenguajeEspanol() + ":");
+//        librosPorIdioma.forEach(System.out::println);
 //    }
-//
-//    private void mostrarAutoresRegistrados() {
-//        System.out.println(autorRepository.findAll());
-//    }
-
-    public void mostrarLibrosRegistrados() {
-        List<Libro> libros = libroRepository.findAll();
-        if (libros.isEmpty()) {
-            System.out.println("No hay libros registrados en la base de datos.");
-        } else {
-            System.out.println("Libros registrados:");
-            libros.forEach(libro -> System.out.println("- " + libro));
-        }
-    }
-
-    private void mostrarAutoresRegistrados() {
-        List<Autor> autores = autorRepository.findAll();
-        if (autores.isEmpty()) {
-            System.out.println("No hay autores registrados en la base de datos.");
-        } else {
-            System.out.println("Autores registrados:");
-            autores.forEach(autor -> System.out.println("- " + autor));
-        }
-    }
-
 
     private void buscarLibrosPorIdioma() {
         System.out.println("Ingrese un idioma: ");
@@ -179,6 +151,17 @@ public class Principal {
             System.out.println("Idioma no válido. Por favor, intente nuevamente.");
         }
     }
+
+
+//    private void mostrarAutoresPorAnio() {
+//    }
+//
+//    private void mostrarAutoresRegistrados() {
+//    }
+//
+//    private void mostrarLibrosRegistrados() {
+//    }
+
 
 }
 
