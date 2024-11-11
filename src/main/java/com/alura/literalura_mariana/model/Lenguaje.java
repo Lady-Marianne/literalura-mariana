@@ -38,9 +38,10 @@ public enum Lenguaje {
         throw new IllegalArgumentException("Ningún lenguaje encontrado: " + texto + ". Lenguajes disponibles: " +
                 Arrays.toString(Lenguaje.values()));
     }
-public String getLenguajeEspanol() {
+    public String getLenguajeEspanol() {
         return lenguajeEspanol;
-}
+    }
+
     // Método auxiliar para normalizar cadenas:
 
     public static String normalizarTexto(String input) {
