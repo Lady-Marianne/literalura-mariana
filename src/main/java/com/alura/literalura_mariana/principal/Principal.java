@@ -13,6 +13,7 @@ import com.alura.literalura_mariana.service.LibroService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @Component
@@ -70,12 +71,12 @@ public class Principal {
                 case 3:
                     mostrarAutoresRegistrados();
                     break;
-//                case 4:
-//                    mostrarAutoresPorAnio();
-//                    break;
+                case 4:
+                    mostrarAutoresPorAnio();
+                    break;
                 case 5:
                     buscarLibrosPorIdioma();
-                   break;
+                    break;
                 case 0:
                     System.out.println("Cerrando la aplicación...");
                     break;
@@ -159,32 +160,38 @@ public class Principal {
         }
     }
 
-    private void buscarLibrosPorIdioma() {
-        System.out.println("Ingrese un idioma: ");
-        var idioma = teclado.nextLine().trim();
+    private void mostrarAutoresPorAnio() {
+        var anio = teclado.nextInt();
+        if (anio > LocalDate.now().getYear()) {
+            System.out.println("Año inválido. Por favor, ingrese un año válido.");
+            return;
+        }
+        // Obtener los autores vivos en el año especificado:
+        List<Autor> autoresVivos = autorRepository.findByYear(anio);
 
-        try {
-            // Normalizamos el texto ingresado usando el método del enum:
-            Lenguaje lenguaje = Lenguaje.fromEspanol(Lenguaje.normalizarTexto(idioma));
-            String idiomaBaseDeDatos = lenguaje.name();
-            List<Libro> librosPorIdioma = libroRepository.findByLanguage(lenguaje);
-            System.out.println("Libros escritos en " + lenguaje.getLenguajeEspanol() + ":");
-            librosPorIdioma.forEach(System.out::println);
-        } catch (IllegalArgumentException e) {
-            System.out.println("Idioma no válido. Por favor, intente nuevamente.");
+        // Mostrar los resultados:
+        if (autoresVivos.isEmpty()) {
+            System.out.println("No se encontraron autores vivos en el año " + anio + ".");
+        } else {
+            System.out.println("Autores vivos en el año " + anio + ":");
+            autoresVivos.forEach(autor -> System.out.println(autor));
         }
     }
 
+        private void buscarLibrosPorIdioma() {
+            System.out.println("Ingrese un idioma: ");
+            var idioma = teclado.nextLine().trim();
 
-//    private void mostrarAutoresPorAnio() {
-//    }
-//
-//    private void mostrarAutoresRegistrados() {
-//    }
-//
-//    private void mostrarLibrosRegistrados() {
-//    }
-
-
-}
+            try {
+                // Normalizamos el texto ingresado usando el método del enum:
+                Lenguaje lenguaje = Lenguaje.fromEspanol(Lenguaje.normalizarTexto(idioma));
+                String idiomaBaseDeDatos = lenguaje.name();
+                List<Libro> librosPorIdioma = libroRepository.findByLanguage(lenguaje);
+                System.out.println("Libros escritos en " + lenguaje.getLenguajeEspanol() + ":");
+                librosPorIdioma.forEach(System.out::println);
+            } catch (IllegalArgumentException e) {
+                System.out.println("Idioma no válido. Por favor, intente nuevamente.");
+            }
+        }
+    }
 
