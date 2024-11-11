@@ -15,10 +15,11 @@ import java.util.Optional;
 @Service
 public class LibroService {
 
-    @Autowired
-    private final AutorRepository autorRepository;
-    @Autowired
-    private final LibroRepository libroRepository;
+@Autowired
+private AutorRepository autorRepository;
+@Autowired
+private LibroRepository libroRepository;
+
 
     @Autowired
     public LibroService(AutorRepository autorRepository, LibroRepository libroRepository) {
@@ -28,7 +29,10 @@ public class LibroService {
 
     @Transactional
     public String verificarYGuardarLibro(Libro libro) {
-        // 1. Verificar si el libro ya existe por su título
+        if (libro == null) {
+            return "El libro buscado no existe en Gutendex.";
+        }
+        // 1. Verificar si el libro ya existe por su título:
         Optional<Libro> libroExistente = libroRepository.findByTitulo(libro.getTitulo());
 
         if (libroExistente.isPresent()) {

@@ -49,7 +49,6 @@ public class Libro {
             this.autor = new Autor(datosAutor);
         }
         // Aseguramos que se pase el primer elemento del array o lista a "fromGutendex":
-
         if (datosLibro.idiomas() != null && !datosLibro.idiomas().isEmpty()) {
             this.idiomas = Lenguaje.fromGutendex(datosLibro.idiomas().get(0));
         }
@@ -58,7 +57,7 @@ public class Libro {
 
     @Override
     public String toString() {
-        return "Título: "+titulo+
+        return "\nTítulo: "+titulo+
                 "\nAutor: " + (autor!= null ? autor.toString() : "Desconocido")+
                 "\nIdioma: "+(idiomas == null ? "Desconocido" : idiomas.getLenguajeEspanol())+
                 "\nNúmero de descargas: "+numeroDeDescargas;

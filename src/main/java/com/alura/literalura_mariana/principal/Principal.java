@@ -1,8 +1,11 @@
 package com.alura.literalura_mariana.principal;
 
+import com.alura.literalura_mariana.model.Lenguaje;
 import com.alura.literalura_mariana.model.Libro;
 import com.alura.literalura_mariana.record.DatosLibro;
 import com.alura.literalura_mariana.record.DatosResultado;
+import com.alura.literalura_mariana.repository.AutorRepository;
+import com.alura.literalura_mariana.repository.LibroRepository;
 import com.alura.literalura_mariana.service.ConsumirAPI;
 import com.alura.literalura_mariana.service.ConvertirDatos;
 import com.alura.literalura_mariana.service.LibroService;
@@ -20,15 +23,18 @@ public class Principal {
     private final ConsumirAPI consumirAPI;
     private final ConvertirDatos conversor;
     private final LibroService libroService;
+    private LibroRepository libroRepository;
+    private AutorRepository autorRepository;
 
     @Autowired
-    public Principal(ConsumirAPI consumirAPI, ConvertirDatos conversor, LibroService libroService) {
+    public Principal(ConsumirAPI consumirAPI, ConvertirDatos conversor, LibroService libroService,
+                     LibroRepository libroRepository, AutorRepository autorRepository) {
         this.consumirAPI = consumirAPI;
         this.conversor = conversor;
         this.libroService = libroService;
+        this.libroRepository = libroRepository;
+        this.autorRepository = autorRepository;
     }
-
-    //    private LibroRepository repositorio;
 
     public void mostrarMenu() {
         var opcion = -1;
@@ -66,9 +72,9 @@ public class Principal {
 //                case 4:
 //                    mostrarAutoresPorAnio();
 //                    break;
-//                case 5:
-//                    buscarLibrosPorIdioma();
-//                    break;
+                case 5:
+                    buscarLibrosPorIdioma();
+                   break;
                 case 0:
                     System.out.println("Cerrando la aplicación...");
                     break;
@@ -117,8 +123,36 @@ public class Principal {
     }
 
 //    private void buscarLibrosPorIdioma() {
+//        System.out.println("Ingrese un idioma: ");
+//        var idioma = teclado.nextLine().trim().toLowerCase();
+//        Lenguaje lenguaje = Lenguaje.fromEspanol(idioma);
+//        if (idioma == null) {
+//            System.out.println("Idioma no válido.");
+//            return; // Salir si el idioma no es válido
+//        }
+//        String idiomaBaseDeDatos = lenguaje.name();
+//        List<Libro> librosPorIdioma = libroRepository.findByLanguage(idiomaBaseDeDatos);
+//        System.out.println("Libros escritos en " + lenguaje.getLenguajeEspanol() + ":");
+//        librosPorIdioma.forEach(System.out::println);
 //    }
-//
+
+    private void buscarLibrosPorIdioma() {
+        System.out.println("Ingrese un idioma: ");
+        var idioma = teclado.nextLine().trim();
+
+        try {
+            // Normalizamos el texto ingresado usando el método del enum:
+            Lenguaje lenguaje = Lenguaje.fromEspanol(Lenguaje.normalizarTexto(idioma));
+            String idiomaBaseDeDatos = lenguaje.name();
+            List<Libro> librosPorIdioma = libroRepository.findByLanguage(lenguaje);
+            System.out.println("Libros escritos en " + lenguaje.getLenguajeEspanol() + ":");
+            librosPorIdioma.forEach(System.out::println);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Idioma no válido. Por favor, intente nuevamente.");
+        }
+    }
+
+
 //    private void mostrarAutoresPorAnio() {
 //    }
 //

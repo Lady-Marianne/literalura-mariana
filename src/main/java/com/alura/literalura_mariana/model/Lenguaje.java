@@ -41,7 +41,7 @@ public String getLenguajeEspanol() {
 }
     // Método auxiliar para normalizar cadenas:
 
-    private static String normalizarTexto(String input) {
+    public static String normalizarTexto(String input) {
         if (input == null) {
             return null;
         }
