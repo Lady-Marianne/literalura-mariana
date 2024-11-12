@@ -10,7 +10,6 @@ import com.alura.literalura_mariana.repository.LibroRepository;
 import com.alura.literalura_mariana.service.ConsumirAPI;
 import com.alura.literalura_mariana.service.ConvertirDatos;
 import com.alura.literalura_mariana.service.LibroService;
-import org.hibernate.type.descriptor.sql.internal.Scale6IntervalSecondDdlType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -98,21 +97,6 @@ public class Principal {
         }
     }
 
-//    private void mostrarLibrosPorAutor() {
-//        System.out.println("Ingrese el nombre de un autor: ");
-//        var nombreAutor = teclado.nextLine().trim();
-//    }
-
-    private void mostrarTop10LibrosMasDescargados() {
-        List<Libro> top10Libros = libroRepository.findAll().stream()
-                .sorted((l1, l2) -> l2.getNumeroDeDescargas().compareTo(l1.getNumeroDeDescargas()))
-                .limit(10)
-                .collect(Collectors.toList());
-        // Mostrar el top 10 en la consola:
-        System.out.println("Top 10 de los libros más descargados:");
-        top10Libros.forEach(System.out::println);
-    }
-
     private void buscarLibroPorTitulo() {
         System.out.println("Escriba el título del libro que desea buscar (o parte del mismo):");
         var tituloLibro = teclado.nextLine();
@@ -193,6 +177,32 @@ public class Principal {
         System.out.println("Total de descargas: " + estadisticas.getSum());
     }
 
+    private void mostrarTop10LibrosMasDescargados() {
+        List<Libro> top10Libros = libroRepository.findAll().stream()
+                .sorted((l1, l2) -> l2.getNumeroDeDescargas().compareTo(l1.getNumeroDeDescargas()))
+                .limit(10)
+                .collect(Collectors.toList());
+        // Mostrar el top 10 en la consola:
+        System.out.println("Top 10 de los libros más descargados:");
+        top10Libros.forEach(System.out::println);
+    }
+
+    private void buscarLibrosPorIdioma() {
+        System.out.println("Ingrese un idioma: ");
+        var idioma = teclado.nextLine().trim();
+
+        try {
+            // Normalizamos el texto ingresado usando el método del enum:
+            Lenguaje lenguaje = Lenguaje.fromEspanol(normalizarTexto(idioma));
+            String idiomaBaseDeDatos = lenguaje.name();
+            List<Libro> librosPorIdioma = libroRepository.findByLanguage(lenguaje);
+            System.out.println("Libros escritos en " + lenguaje.getLenguajeEspanol() + ":");
+            librosPorIdioma.forEach(System.out::println);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Idioma no válido. Por favor, intente nuevamente.");
+        }
+    }
+
     private void mostrarAutoresRegistrados() {
         List<Autor> autores = autorRepository.findAll();
         if (autores.isEmpty()) {
@@ -228,21 +238,10 @@ public class Principal {
             teclado.nextLine();
         }
     }
-
-    private void buscarLibrosPorIdioma() {
-        System.out.println("Ingrese un idioma: ");
-        var idioma = teclado.nextLine().trim();
-
-        try {
-            // Normalizamos el texto ingresado usando el método del enum:
-            Lenguaje lenguaje = Lenguaje.fromEspanol(normalizarTexto(idioma));
-            String idiomaBaseDeDatos = lenguaje.name();
-            List<Libro> librosPorIdioma = libroRepository.findByLanguage(lenguaje);
-            System.out.println("Libros escritos en " + lenguaje.getLenguajeEspanol() + ":");
-            librosPorIdioma.forEach(System.out::println);
-        } catch (IllegalArgumentException e) {
-            System.out.println("Idioma no válido. Por favor, intente nuevamente.");
-        }
-    }
+    
+    //    private void mostrarLibrosPorAutor() {
+//        System.out.println("Ingrese el nombre de un autor: ");
+//        var nombreAutor = teclado.nextLine().trim();
+//    }
 }
 
