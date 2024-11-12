@@ -1,4 +1,4 @@
-package com.alura.literalura_mariana.model;
+/*package com.alura.literalura_mariana.model;
 
 import com.alura.literalura_mariana.record.DatosLibro;
 import lombok.AllArgsConstructor;
@@ -15,4 +15,4 @@ import java.util.List;
 
 public class Resultado {
     private List<DatosLibro> resultados;
-}
+}*/
