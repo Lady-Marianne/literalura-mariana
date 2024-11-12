@@ -1,5 +1,7 @@
 package com.alura.literalura_mariana.model;
 
+import lombok.Getter;
+
 import java.text.Normalizer;
 import java.util.Arrays;
 
@@ -12,6 +14,7 @@ public enum Lenguaje {
     ALEMAN("de", "Alemán");
 
     private String lenguajeGutendex;
+    @Getter
     private String lenguajeEspanol;
 
     Lenguaje (String lenguajeGutendex, String lenguajeEspanol){
@@ -38,9 +41,10 @@ public enum Lenguaje {
         throw new IllegalArgumentException("Ningún lenguaje encontrado: " + texto + ". Lenguajes disponibles: " +
                 Arrays.toString(Lenguaje.values()));
     }
-    public String getLenguajeEspanol() {
-        return lenguajeEspanol;
-    }
+
+//    public String getLenguajeEspanol() {
+//        return lenguajeEspanol;
+//    }
 
     // Método auxiliar para normalizar cadenas:
 
@@ -48,7 +52,6 @@ public enum Lenguaje {
         if (input == null) {
             return null;
         }
-
         // Normaliza el texto para eliminar las tildes y poner todo en minúsculas:
 
         return Normalizer.normalize(input, Normalizer.Form.NFD)

@@ -10,11 +10,15 @@ import com.alura.literalura_mariana.repository.LibroRepository;
 import com.alura.literalura_mariana.service.ConsumirAPI;
 import com.alura.literalura_mariana.service.ConvertirDatos;
 import com.alura.literalura_mariana.service.LibroService;
+import org.hibernate.type.descriptor.sql.internal.Scale6IntervalSecondDdlType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
+
+import static com.alura.literalura_mariana.model.Lenguaje.normalizarTexto;
 
 @Component
 public class Principal {
@@ -43,10 +47,12 @@ public class Principal {
         while (opcion != 0) {
             var menu = """
                     \n1 - Buscar y mostrar libro por título.
-                    2 - Mostrar los libros registrados.
-                    3 - Mostrar los autores registrados. 
-                    4 - Mostrar autores vivos durante un año determinado.
-                    5 - Mostrar libros por idiomas.
+                    2 - Mostrar los libros registrados y sus estadísticas.
+                    3 - Mostrar el Top 10 de los libros más descargados.
+                    4 - Mostrar libros por idiomas.
+                    5 - Mostrar los autores registrados. 
+                    6 - Mostrar autores vivos durante un año determinado.
+                    7 - Mostrar libros por autor.
                     0 - Salir
                     """;
             System.out.println(menu);
@@ -69,14 +75,20 @@ public class Principal {
                     mostrarLibrosRegistrados();
                     break;
                 case 3:
-                    mostrarAutoresRegistrados();
+                    mostrarTop10LibrosMasDescargados();
                     break;
                 case 4:
-                    mostrarAutoresPorAnio();
-                    break;
-                case 5:
                     buscarLibrosPorIdioma();
                     break;
+                case 5:
+                    mostrarAutoresRegistrados();
+                    break;
+                case 6:
+                    mostrarAutoresPorAnio();
+                    break;
+//                case 7:
+//                    mostrarLibrosPorAutor();
+//                    break;
                 case 0:
                     System.out.println("Cerrando la aplicación...");
                     break;
@@ -84,6 +96,21 @@ public class Principal {
                     System.out.println("Opción inválida.");
             }
         }
+    }
+
+//    private void mostrarLibrosPorAutor() {
+//        System.out.println("Ingrese el nombre de un autor: ");
+//        var nombreAutor = teclado.nextLine().trim();
+//    }
+
+    private void mostrarTop10LibrosMasDescargados() {
+        List<Libro> top10Libros = libroRepository.findAll().stream()
+                .sorted((l1, l2) -> l2.getNumeroDeDescargas().compareTo(l1.getNumeroDeDescargas()))
+                .limit(10)
+                .collect(Collectors.toList());
+        // Mostrar el top 10 en la consola:
+        System.out.println("Top 10 de los libros más descargados:");
+        top10Libros.forEach(System.out::println);
     }
 
     private void buscarLibroPorTitulo() {
@@ -96,6 +123,10 @@ public class Principal {
         var json = consumirAPI.obtenerDatos(URL_BASE + "?search=" +
                 tituloLibro.replace(" ", "+"));
 
+        // Hacer búsqueda por libro y autor:
+//        var json = consumirAPI.obtenerDatos(URL_BASE + "?search=" +
+//                tituloLibro.replace(" ", "+") + nombreAutor.replace(" ","+"));
+
         // Obtener el JSON bonito que me muestra todas las versiones del libro:
         var jsonBonito = conversor.obtenerJsonBonito(json);
 
@@ -107,14 +138,15 @@ public class Principal {
         // Buscar el primer libro cuyo título contenga la búsqueda.
         // Antes, nos aseguramos que el libro esté en un idioma "permitido",
         // o sea, de los que figuran en nuestro enum:
-
         Optional<DatosLibro> libroBuscado = datosBusqueda.resultados().stream()
                 .filter(l -> {
                     try {
-                        // Verificar que la lista de idiomas no esté vacía y procesar el primer idioma:
+                        // Verificar que la lista de idiomas no esté vacía y procesar el primer idioma.
+                        // Aclaración: La mayoría de los libros vienen en un solo idioma, con excepción de
+                        // algunos diccionarios:
                         if (!l.idiomas().isEmpty()) {
                             Lenguaje lenguaje = Lenguaje.fromGutendex(l.idiomas().get(0));
-                            return l.titulo().toUpperCase().contains(tituloLibro.toUpperCase());
+                            return l.titulo().toUpperCase().contains((tituloLibro.toUpperCase()));
                         } else {
                             System.out.println("Idioma no especificado para el libro: " + l.titulo());
                             return false;
@@ -124,7 +156,6 @@ public class Principal {
                     }
                 })
                 .findFirst();
-
         Libro libro = null;
         if (libroBuscado.isPresent()) {
             libro = new Libro(libroBuscado.get(), null);
@@ -148,6 +179,18 @@ public class Principal {
             System.out.println("Libros registrados:");
             libros.forEach(libro -> System.out.println("- " + libro));
         }
+
+        // Calcular las estadísticas de las descargas:
+        IntSummaryStatistics estadisticas = libros.stream()
+                .mapToInt(Libro::getNumeroDeDescargas)  // Extrae el número de descargas.
+                .summaryStatistics();  // Obtiene estadísticas de los descargas.
+
+        // Mostrar las estadísticas:
+        System.out.println("\nEstadísticas de las descargas:");
+        System.out.println("Promedio de descargas: " + String.format("%.2f",estadisticas.getAverage()));
+        System.out.println("Número máximo de descargas: " + estadisticas.getMax());
+        System.out.println("Número mínimo de descargas: " + estadisticas.getMin());
+        System.out.println("Total de descargas: " + estadisticas.getSum());
     }
 
     private void mostrarAutoresRegistrados() {
@@ -161,38 +204,45 @@ public class Principal {
     }
 
     private void mostrarAutoresPorAnio() {
-        System.out.println("Ingrese un año: ");
-        var anio = teclado.nextInt();
-        if (anio > LocalDate.now().getYear()) {
-            System.out.println("Año inválido. Por favor, ingrese un año válido.");
-            return;
-        }
-        // Obtener los autores vivos en el año especificado:
-        List<Autor> autoresVivos = autorRepository.findByYear(anio);
-
-        // Mostrar los resultados:
-        if (autoresVivos.isEmpty()) {
-            System.out.println("No se encontraron autores vivos en el año " + anio + ".");
-        } else {
-            System.out.println("Autores vivos en el año " + anio + ":");
-            autoresVivos.forEach(autor -> System.out.println(autor));
-        }
-    }
-
-        private void buscarLibrosPorIdioma() {
-            System.out.println("Ingrese un idioma: ");
-            var idioma = teclado.nextLine().trim();
-
-            try {
-                // Normalizamos el texto ingresado usando el método del enum:
-                Lenguaje lenguaje = Lenguaje.fromEspanol(Lenguaje.normalizarTexto(idioma));
-                String idiomaBaseDeDatos = lenguaje.name();
-                List<Libro> librosPorIdioma = libroRepository.findByLanguage(lenguaje);
-                System.out.println("Libros escritos en " + lenguaje.getLenguajeEspanol() + ":");
-                librosPorIdioma.forEach(System.out::println);
-            } catch (IllegalArgumentException e) {
-                System.out.println("Idioma no válido. Por favor, intente nuevamente.");
+        try {
+            System.out.println("Ingrese un año: ");
+            var anio = teclado.nextInt();
+            if (anio > LocalDate.now().getYear()) {
+                System.out.println("Año inválido. Por favor, ingrese un año válido.");
+                return;
             }
+
+            // Obtener los autores vivos en el año especificado:
+            List<Autor> autoresVivos = autorRepository.findByYear(anio);
+
+            // Mostrar los resultados:
+            if (autoresVivos.isEmpty()) {
+                System.out.println("No se encontraron autores vivos en el año " + anio + ".");
+            } else {
+                System.out.println("Autores vivos en el año " + anio + ":");
+                autoresVivos.forEach(autor -> System.out.println(autor));
+            }
+        } catch (InputMismatchException e) {
+            System.out.println("Error: Por favor, ingrese un número entero válido para el año.");
+            // Limpiar el buffer de entrada para evitar un loop infinito:
+            teclado.nextLine();
         }
     }
+
+    private void buscarLibrosPorIdioma() {
+        System.out.println("Ingrese un idioma: ");
+        var idioma = teclado.nextLine().trim();
+
+        try {
+            // Normalizamos el texto ingresado usando el método del enum:
+            Lenguaje lenguaje = Lenguaje.fromEspanol(normalizarTexto(idioma));
+            String idiomaBaseDeDatos = lenguaje.name();
+            List<Libro> librosPorIdioma = libroRepository.findByLanguage(lenguaje);
+            System.out.println("Libros escritos en " + lenguaje.getLenguajeEspanol() + ":");
+            librosPorIdioma.forEach(System.out::println);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Idioma no válido. Por favor, intente nuevamente.");
+        }
+    }
+}
 

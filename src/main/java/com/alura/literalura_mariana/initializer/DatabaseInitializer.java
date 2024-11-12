@@ -21,7 +21,7 @@ public class DatabaseInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        String dbName = "literalura-mariana";  // El nombre de la base de datos que estás verificando
+        String dbName = "literalura";  // El nombre de la base de datos que estás verificando.
 
         try (Connection connection = DriverManager.getConnection(url, username, password);
              Statement statement = connection.createStatement()) {
@@ -31,7 +31,7 @@ public class DatabaseInitializer implements CommandLineRunner {
                     "SELECT 1 FROM pg_database WHERE datname = '" + dbName + "';"
             );
 
-            if (!resultSet.next()) {  // Si el ResultSet está vacío, la base de datos no existe
+            if (!resultSet.next()) {  // Si el ResultSet está vacío, la base de datos no existe.
                 statement.executeUpdate("CREATE DATABASE \"" + dbName + "\";");
                 System.out.println("\nBase de datos creada: " + dbName);
             } else {
