@@ -161,6 +161,7 @@ public class Principal {
     }
 
     private void mostrarAutoresPorAnio() {
+        System.out.println("Ingrese un año: ");
         var anio = teclado.nextInt();
         if (anio > LocalDate.now().getYear()) {
             System.out.println("Año inválido. Por favor, ingrese un año válido.");

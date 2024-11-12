@@ -22,10 +22,10 @@ public class Autor {
     private Long idAutor;
 
     private String nombre;
-    private String fechaDeNacimiento;
-    private String fechaDeMuerte;
+    private Integer fechaDeNacimiento;
+    private Integer fechaDeMuerte;
 
-    @OneToMany(mappedBy = "autor", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "autores", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Libro> libros;
 
     public Autor(DatosAutor datosAutor) {
