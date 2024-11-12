@@ -10,6 +10,7 @@ import lombok.Setter;
 import java.util.List;
 
 @Entity
+@Table(name = "autores")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -25,7 +26,7 @@ public class Autor {
     private Integer fechaDeNacimiento;
     private Integer fechaDeMuerte;
 
-    @OneToMany(mappedBy = "autores", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "autor", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Libro> libros;
 
     public Autor(DatosAutor datosAutor) {
