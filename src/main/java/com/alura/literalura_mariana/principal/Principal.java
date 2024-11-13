@@ -115,8 +115,9 @@ public class Principal {
         // Obtener el JSON bonito que me muestra todas las versiones del libro:
         var jsonBonito = conversor.obtenerJsonBonito(json);
 
-        // Imprimir JSON formateado:
-        System.out.println("\n" + jsonBonito + "\n");
+        // Imprimir JSON formateado (se usa más por razones de prueba y depuración.
+        // Se puede descomentar:
+//        System.out.println("\n" + jsonBonito + "\n");
 
         var datosBusqueda = conversor.obtenerDatos(json, DatosResultado.class);
 
