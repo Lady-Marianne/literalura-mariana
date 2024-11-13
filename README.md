@@ -46,38 +46,31 @@ com.alura.literalura_mariana
 
 ---
 
-## Estructura extendida:
+## Contenido de los paquetes:
 
-literalura-mariana
-│
-├── src
-│   └── com
-│       └── alura
-│           └── literalura_mariana
-│               ├── initializer
-│               │   └── LiteraluraMarianaApplication.java
-│               ├── model
-│               │   ├── Autor.java
-│               │   ├── Lenguaje.java
-│               │   ├── Libro.java
-│               ├── principal
-│               │   └── Principal.java
-│               ├── record
-│               │   ├── DatosAutor.java
-│               │   ├── DatosLibro.java
-│               │   ├── DatosResultado.java
-│               ├── repository
-│               │   ├── LibroRepository.java
-│               │   ├── AutorRepository.java
-│               ├── service
-│               │   ├── ConsumirAPI.java
-│               │   ├── ConvertirDatos.java
-│               │   ├── IConvertirDatos.java
-│               │   └── LibroService.java
-├── resources
-│   └── application.properties
-├── pom.xml
-└── README.md
+- initializer: LiteraluraMarianaApplication.java
+
+- principal: Principal.java
+
+- model: - Autor.java
+         - Lenguaje.java
+         - Libro.java
+
+- record: - DatosAutor.java
+          - DatosLibro.java
+          - DatosResultado.java
+
+- repository: - libroRepository.java
+              - autorRepository.java
+
+- service: - ConsumirAPI.java
+           - ConvertirDatos.java
+           - IConvertirDatos.java
+           - LibroService.java
+
+- resources. - application.properties
+- pom.xml
+- README.md
 
 ---
 ## Funcionalidades:
