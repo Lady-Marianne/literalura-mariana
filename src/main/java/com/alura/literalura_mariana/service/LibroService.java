@@ -2,7 +2,6 @@ package com.alura.literalura_mariana.service;
 
 import com.alura.literalura_mariana.model.Autor;
 import com.alura.literalura_mariana.model.Libro;
-import com.alura.literalura_mariana.record.DatosLibro;
 import com.alura.literalura_mariana.repository.AutorRepository;
 import com.alura.literalura_mariana.repository.LibroRepository;
 import org.springframework.beans.factory.annotation.Autowired;

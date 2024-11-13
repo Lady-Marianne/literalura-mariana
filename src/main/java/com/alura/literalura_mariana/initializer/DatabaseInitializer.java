@@ -1,4 +1,4 @@
-package com.alura.literalura_mariana.initializer;
+/*package com.alura.literalura_mariana.initializer;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -41,4 +41,4 @@ public class DatabaseInitializer implements CommandLineRunner {
             System.out.println("\nError al verificar o crear la base de datos: " + e.getMessage());
         }
     }
-}
+}*/

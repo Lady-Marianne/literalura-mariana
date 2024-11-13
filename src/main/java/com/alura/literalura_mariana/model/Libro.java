@@ -2,7 +2,6 @@ package com.alura.literalura_mariana.model;
 
 import com.alura.literalura_mariana.record.DatosAutor;
 import com.alura.literalura_mariana.record.DatosLibro;
-import com.alura.literalura_mariana.model.Autor;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
