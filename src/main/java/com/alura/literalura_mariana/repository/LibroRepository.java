@@ -16,4 +16,9 @@ public interface LibroRepository extends JpaRepository<Libro, Long> {
 
     @Query("SELECT l FROM Libro l WHERE l.idiomas = :idiomas")
     List<Libro> findByLanguage(@Param("idiomas") Lenguaje idiomas);
+
+    @Query("SELECT l FROM Libro l WHERE LOWER(l.autor.nombre) LIKE LOWER(CONCAT('%', :nombre, '%'))")
+//@Query(value = "SELECT * FROM Libro l WHERE LOWER(unaccent(l.autor.nombre))" +
+//        "LIKE LOWER(unaccent(CONCAT('%', :nombre, '%')))", nativeQuery = true)
+    List<Libro> findByName(@Param("nombre") String nombre);
 }
