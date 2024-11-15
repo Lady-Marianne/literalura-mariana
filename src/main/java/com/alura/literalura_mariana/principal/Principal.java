@@ -44,16 +44,42 @@ public class Principal {
     public void mostrarMenu() {
         var opcion = -1;
         while (opcion != 0) {
+//            var menu = """
+//                    \n1 - Buscar y mostrar libro por título.
+//                    2 - Mostrar los libros registrados y sus estadísticas.
+//                    3 - Mostrar el Top 10 de los libros más descargados.
+//                    4 - Mostrar libros por idiomas.
+//                    5 - Mostrar los autores registrados.
+//                    6 - Mostrar autores vivos durante un año determinado.
+//                    7 - Mostrar libros por autor.
+//                    0 - Salir
+//                    """;
+            var bienvenida = """
+                   *****************************************************
+                   *   ¡BIENVENID@S A LITERALURA!                      *
+                   *   La biblioteca virtual donde los libros cobran   *
+                   *   vida.                                           *
+                   *****************************************************
+                   """;
+
             var menu = """
-                    \n1 - Buscar y mostrar libro por título.
-                    2 - Mostrar los libros registrados y sus estadísticas.
-                    3 - Mostrar el Top 10 de los libros más descargados.
-                    4 - Mostrar libros por idiomas.
-                    5 - Mostrar los autores registrados. 
-                    6 - Mostrar autores vivos durante un año determinado.
-                    7 - Mostrar libros por autor.
-                    0 - Salir
-                    """;
+             ┌──────────────────────────────────────────────┐
+             │                 MENÚ PRINCIPAL               │
+             ├──────────────────────────────────────────────┤
+             │ 1 - Buscar y mostrar libro por título.       │
+             │ 2 - Mostrar los libros registrados y sus     │
+             │     estadísticas.                            │
+             │ 3 - Mostrar el Top 10 de los libros más      │
+             │     descargados.                             │
+             │ 4 - Mostrar libros por idiomas.              │
+             │ 5 - Mostrar los autores registrados.         │
+             │ 6 - Mostrar autores vivos durante un año     │
+             │     determinado.                             │
+             │ 7 - Mostrar libros por autor.                │
+             │ 0 - Salir                                    │
+             └──────────────────────────────────────────────┘
+            """;
+            System.out.println(bienvenida);
             System.out.println(menu);
 
             try {
