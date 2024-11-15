@@ -35,12 +35,28 @@ public class Autor {
         this.fechaDeMuerte = datosAutor.fechaDeMuerte();
     }
 
+//    @Override
+//    public String toString() {
+//        return  "\nNombre: "+nombre+
+//                "\nFecha de nacimiento: "+fechaDeNacimiento+
+//                "\nFecha de muerte: "+fechaDeMuerte;
+//    }
+
     @Override
     public String toString() {
-        return  "\nNombre: "+nombre+
-                "\nFecha de nacimiento: "+fechaDeNacimiento+
-                "\nFecha de muerte: "+fechaDeMuerte;
+        return """
+            --------------------------
+            👤 Nombre: %s
+            🗓️  Fecha de nacimiento: %s
+            🕯️  Fecha de muerte: %s
+            --------------------------
+            """.formatted(
+                nombre,
+                fechaDeNacimiento != null ? fechaDeNacimiento : "Desconocida",
+                fechaDeMuerte != null ? fechaDeMuerte : "Desconocida"
+        );
     }
+
 }
 
 

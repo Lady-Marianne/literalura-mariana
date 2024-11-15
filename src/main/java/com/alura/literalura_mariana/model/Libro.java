@@ -54,13 +54,31 @@ public class Libro {
         this.numeroDeDescargas = datosLibro.numeroDeDescargas();
     }
 
+//    @Override
+//    public String toString() {
+//        return "\nTítulo: "+titulo+
+//                "\nAutor: " + (autor!= null ? autor.getNombre() : "Desconocido")+
+//                "\nIdioma: "+(idiomas == null ? "Desconocido" : idiomas.getLenguajeEspanol())+
+//                "\nNúmero de descargas: "+numeroDeDescargas;
+//    }
+
     @Override
     public String toString() {
-        return "\nTítulo: "+titulo+
-                "\nAutor: " + (autor!= null ? autor.toString() : "Desconocido")+
-                "\nIdioma: "+(idiomas == null ? "Desconocido" : idiomas.getLenguajeEspanol())+
-                "\nNúmero de descargas: "+numeroDeDescargas;
+        return """
+            --------------------------
+            📚 Título: %s
+            ✍️  Autor: %s
+            🌍 Idioma: %s
+            🔢 Número de descargas: %d
+            --------------------------
+            """.formatted(
+                titulo,
+                autor != null ? autor.getNombre() : "Desconocido",
+                idiomas == null ? "Desconocido" : idiomas.getLenguajeEspanol(),
+                numeroDeDescargas != null ? numeroDeDescargas : 0
+        );
     }
+
 
 }
 
