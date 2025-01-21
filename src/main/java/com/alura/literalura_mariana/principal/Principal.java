@@ -121,11 +121,6 @@ public class Principal {
         var json = consumirAPI.obtenerDatos(URL_BASE + "?search=" +
                 tituloLibro.replace(" ", "+"));
 
-        // Hacer búsqueda por libro y autor:
-//        var json = consumirAPI.obtenerDatos(URL_BASE + "?search=" +
-//                tituloLibro.replace(" ", "+") + "%20"
-//               + nombreAutor.replace(" ","+"));
-
         // Obtener el JSON bonito que me muestra todas las versiones del libro:
         var jsonBonito = conversor.obtenerJsonBonito(json);
 
@@ -266,11 +261,7 @@ public class Principal {
             if (libros.isEmpty()) {
                 System.out.println("No se encontraron libros de: " + nombreAutor);
             } else {
-//                System.out.println("Libros de " + libros.get(0).getAutor().getNombre() + ":");
-//                libros.forEach(libro -> System.out.println("Título: " + libro.getTitulo() +
-//                        "\nDescargas: " + libro.getNumeroDeDescargas()));
                 libros.forEach(libro -> System.out.println("- " + libro));
-
             }
         }
 }

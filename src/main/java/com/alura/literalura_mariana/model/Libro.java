@@ -54,14 +54,6 @@ public class Libro {
         this.numeroDeDescargas = datosLibro.numeroDeDescargas();
     }
 
-//    @Override
-//    public String toString() {
-//        return "\nTítulo: "+titulo+
-//                "\nAutor: " + (autor!= null ? autor.getNombre() : "Desconocido")+
-//                "\nIdioma: "+(idiomas == null ? "Desconocido" : idiomas.getLenguajeEspanol())+
-//                "\nNúmero de descargas: "+numeroDeDescargas;
-//    }
-
     @Override
     public String toString() {
         return """

@@ -46,7 +46,7 @@ private LibroRepository libroRepository;
             if (autorExistente.isPresent()) {
                 autor = autorExistente.get();
             } else {
-                // Si el autor no existe, se guarda uno nuevo
+                // Si el autor no existe, se guarda uno nuevo:
                 autor = libro.getAutor();
                 autorRepository.save(autor);
             }
